@@ -1,0 +1,28 @@
+
+
+# load the eBPF program:
+sudo bpftool prog load nethook.o /sys/fs/bpf/nhook
+
+# to show the loaded program
+sudo bpftool prog show
+
+# Turn off LRO if your interface dosen't support it (do it once after each boot)
+sudo ethtool -K <interface_name> lro off
+
+# attach the prog to an event fot this example it is xdp.
+sudo bpftool net attach xdp id 71 dev eth0
+
+# list the attached events
+sudo bpftool net list
+
+# see the bpf_printk outputs
+sudo bpftool prog tracelog
+
+# detach from the event
+bpftool net detach xdp dev eth0
+
+# remove the loaded program
+sudo rm /sys/fs/bpf/nhook
+
+# check whether the program is removed or not
+sudo ls /sys/fs/bpf/
